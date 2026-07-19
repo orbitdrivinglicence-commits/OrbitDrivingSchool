@@ -7,30 +7,57 @@ on:
 
 jobs:
   build-apk:
+
     runs-on: ubuntu-latest
 
     steps:
+
+      # Checkout source code
       - name: Checkout Project
         uses: actions/checkout@v4
 
+
+      # Setup Python
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Install Flet
+
+      # Install Python packages
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flet
+          pip install flet==0.86.1
 
+
+      # Install Flutter SDK before Flet build
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.44.4"
+          channel: stable
+
+
+      # Accept Android licenses
       - name: Accept Android Licenses
         run: |
-          yes | flutter doctor --android-licenses
+          yes | flutter doctor --android-licenses || true
 
+
+      # Check Flutter
+      - name: Flutter Doctor
+        run: |
+          flutter doctor
+
+
+      # Build APK
       - name: Build APK
         run: |
-          yes | flet build apk
+          flet build apk --yes
 
+
+      # Upload APK
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
