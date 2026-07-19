@@ -5,4 +5,16 @@ company = "Orbit Driving School"
 copyright = "Copyright © 2026 Orbit Driving School"
 
 [tool.flet.app]
+path = "."
 icon = "assets/images/app_icon.png"
+
+[tool.flet.android]
+adaptive_icon_background = "#FFFFFF"
+adaptive_icon_foreground = "assets/images/app_icon.png"
+
+[tool.flet.assets]
+include = [
+    "assets/**",
+    "database/**"
+]
+

@@ -13,31 +13,31 @@ Mode      : Offline
 import sqlite3
 import os
 from datetime import datetime
-
+import flet as ft
 # -------------------------------------------------------
 # Database Location
 # -------------------------------------------------------
 
-import os
-import sqlite3
-
-
 def get_database_location():
 
-	app_folder = os.path.join(
-		os.path.expanduser("~"),
-		".orbit_driving_school"
-	)
+    try:
+        app_folder = ft.get_app_data_dir()
 
-	os.makedirs(
-		app_folder,
-		exist_ok=True
-	)
+    except Exception:
+        app_folder = os.path.join(
+            os.path.expanduser("~"),
+            ".orbit_driving_school"
+        )
 
-	return os.path.join(
-		app_folder,
-		"database.db"
-	)
+    os.makedirs(
+        app_folder,
+        exist_ok=True
+    )
+
+    return os.path.join(
+        app_folder,
+        "database.db"
+    )
 
 
 DATABASE_FILE = get_database_location()
