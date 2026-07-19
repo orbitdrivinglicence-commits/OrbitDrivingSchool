@@ -14,32 +14,49 @@ import sqlite3
 import os
 from datetime import datetime
 
-
 # -------------------------------------------------------
 # Database Location
 # -------------------------------------------------------
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+import os
+import sqlite3
 
-DATABASE_FOLDER = os.path.join(BASE_DIR, "database")
 
-DATABASE_FILE = os.path.join(
-    DATABASE_FOLDER,
-    "database.db"
-)
+def get_database_location():
+
+	app_folder = os.path.join(
+		os.path.expanduser("~"),
+		".orbit_driving_school"
+	)
+
+	os.makedirs(
+		app_folder,
+		exist_ok=True
+	)
+
+	return os.path.join(
+		app_folder,
+		"database.db"
+	)
+
+
+DATABASE_FILE = get_database_location()
 
 
 class OrbitDatabase:
 
-    def __init__(self):
+	def __init__(self):
 
-        os.makedirs(DATABASE_FOLDER, exist_ok=True)
+		self.connection = sqlite3.connect(
+			DATABASE_FILE
+		)
 
-        self.connection = sqlite3.connect(DATABASE_FILE)
+		self.connection.execute(
+			"PRAGMA foreign_keys = ON"
+		)
 
-        self.connection.execute("PRAGMA foreign_keys = ON")
+		self.cursor = self.connection.cursor()
 
-        self.cursor = self.connection.cursor()
 
     # ---------------------------------------------------
     # Create All Tables
