@@ -112,19 +112,21 @@ class StudentSearch:
             visible=False
         )
 
-
         self.result_area = ft.Column(
             scroll=ft.ScrollMode.AUTO
         )
 
 
-        self.load_student_list()
+        self.load_students()
 
     # -------------------------
     # Load Students
     # -------------------------
 
-    def load_student_list(self):
+    def load_students(self):
+
+        self.student_dropdown.options.clear()
+
 
         conn = sqlite3.connect(DB_PATH)
 
@@ -144,6 +146,8 @@ class StudentSearch:
 
         conn.close()
 
+        # Clear old list before reload
+        self.student_dropdown.options.clear()
 
         for row in rows:
 

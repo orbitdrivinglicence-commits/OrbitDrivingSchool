@@ -240,14 +240,16 @@ class StudentRegistration:
 
 
             conn.commit()
-
             conn.close()
 
+            if hasattr(self.page, "student_payment"):
+                self.page.student_payment.load_students()
 
+            if hasattr(self.page, "student_search"):
+                self.page.student_search.load_students()
 
-            self.message.value = (
-                "Student Saved Successfully"
-            )
+            self.message.value = "Student Saved Successfully"
+
 
             self.message.color = "green"
 
@@ -256,6 +258,7 @@ class StudentRegistration:
             if hasattr(self.page, "home"):
 
                  self.page.home.refresh_dashboard()
+
 
             self.registration_id.value = generate_registration_id()
 

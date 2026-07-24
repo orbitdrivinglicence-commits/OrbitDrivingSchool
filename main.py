@@ -56,8 +56,6 @@ def main(page: ft.Page):
 
 
 
-
-
     # -----------------------------
     # Main Content Area
     # -----------------------------
@@ -98,6 +96,18 @@ def main(page: ft.Page):
 
         page.update()
 
+    payment_page = StudentPayment(page)
+
+    page.student_payment = payment_page
+
+
+    student_search_page = StudentSearch(
+           page,
+           change_screen,
+           refresh_app
+    )
+
+    page.student_search = student_search_page
 
     # -----------------------------
     # Top Bar
@@ -119,7 +129,7 @@ def main(page: ft.Page):
 
                     ft.Image(
 
-                        src="assets/images/logo.png",
+                        src="images/logo.png",
 
                         width=55,
 
@@ -524,7 +534,7 @@ def main(page: ft.Page):
                     ft.Icons.MONEY,
 
 
-                    StudentPayment(page).build()
+                    payment_page.build()
 
 
                 ),
@@ -540,16 +550,8 @@ def main(page: ft.Page):
 
                     ft.Icons.SEARCH,
 
-                    StudentSearch(
 
-                        page,
-
-                        change_screen,
-
-                        refresh_app
-
-                    ).build()
-
+                    student_search_page.build()
 
                 ),
 
@@ -705,4 +707,7 @@ def main(page: ft.Page):
 # -----------------------------
 
 if __name__ == "__main__":
-    ft.run(main)
+    ft.run(
+        main,
+        assets_dir="assets",
+    )

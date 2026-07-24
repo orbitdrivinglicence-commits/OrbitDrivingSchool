@@ -150,17 +150,6 @@ class Home:
     def today_income(self):
 
 
-        registration = self.get_value(
-
-            """
-            SELECT IFNULL(SUM(registration_fee),0)
-            FROM students
-            WHERE registration_date = date('now')
-            """
-
-        )
-
-
         payments = self.get_value(
 
             """
@@ -183,7 +172,7 @@ class Home:
         )
 
 
-        return f"₹ {registration + payments + manual_income}"
+        return f"₹ {payments + manual_income}"
 
 
 
@@ -223,17 +212,6 @@ class Home:
 
 
         income = self.get_value(
-
-            """
-            SELECT IFNULL(SUM(registration_fee),0)
-            FROM students
-            WHERE registration_date = date('now')
-            """
-
-        )
-
-
-        income += self.get_value(
 
             """
             SELECT IFNULL(SUM(amount),0)
@@ -976,13 +954,9 @@ class Home:
                 [
 
                     ft.Image(
-
-                        src="assets/images/logo.png",
-
+                        src="images/logo.png",
                         width=120,
-
                         height=120,
-
                     ),
 
 

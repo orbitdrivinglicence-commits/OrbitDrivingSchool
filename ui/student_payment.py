@@ -159,6 +159,7 @@ class StudentPayment:
 
     def load_students(self):
 
+        self.student_dropdown.options.clear()
 
         conn = sqlite3.connect(DB_PATH)
 
@@ -415,7 +416,7 @@ class StudentPayment:
 
 
 
-            total_paid = registration_fee + paid
+            total_paid = paid
 
 
             balance = total_fee - total_paid
@@ -542,7 +543,18 @@ class StudentPayment:
 
         conn.close()
 
+        # Refresh Dashboard
 
+        if hasattr(self.page, "home"):
+
+            self.page.home.refresh_dashboard()
+
+
+        # Refresh Student Payment List
+
+        if hasattr(self.page, "student_payment"):
+
+            self.page.student_payment.load_students()
 
 
         self.message.value = "Payment Saved Successfully"

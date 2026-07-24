@@ -13,5 +13,6 @@ adaptive_icon_background = "#FFFFFF"
 adaptive_icon_foreground = "assets/images/app_icon.png"
 
 [tool.flet.assets]
-include = []
-
+include = [
+    "assets/**"
+]
