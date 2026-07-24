@@ -119,7 +119,7 @@ def main(page: ft.Page):
 
                     ft.Image(
 
-                        src="images/logo.png",
+                        src="assets/images/logo.png",
 
                         width=55,
 
@@ -486,23 +486,15 @@ def main(page: ft.Page):
 
 
 
-
                 nav_button(
-
 
                     "DASHBOARD",
 
-
                     ft.Icons.DASHBOARD,
 
-                    Home(
-                        page,
-                        change_screen,
-                        refresh_app
-                    ).build()
+                    home_screen
 
                 ),
-
 
 
 
@@ -713,9 +705,4 @@ def main(page: ft.Page):
 # -----------------------------
 
 if __name__ == "__main__":
-
-    ft.run(
-
-        main,
-
-    )
+    ft.run(main)

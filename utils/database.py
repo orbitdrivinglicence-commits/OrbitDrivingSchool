@@ -10,66 +10,52 @@ Mode      : Offline
 =========================================================
 """
 
-import sqlite3
 import os
-from datetime import datetime
+import sqlite3
 import flet as ft
-# -------------------------------------------------------
-# Database Location
-# -------------------------------------------------------
+
+
+# ---------------------------------------------------
+# DATABASE LOCATION
+# ---------------------------------------------------
 
 def get_database_location():
+    """Return application database path."""
 
     try:
         app_folder = ft.get_app_data_dir()
-
     except Exception:
         app_folder = os.path.join(
             os.path.expanduser("~"),
             ".orbit_driving_school"
         )
 
-    os.makedirs(
-        app_folder,
-        exist_ok=True
-    )
+    os.makedirs(app_folder, exist_ok=True)
 
-    return os.path.join(
-        app_folder,
-        "database.db"
-    )
+    return os.path.join(app_folder, "database.db")
 
 
 DATABASE_FILE = get_database_location()
 
 
+# ---------------------------------------------------
+# DATABASE CLASS
+# ---------------------------------------------------
+
 class OrbitDatabase:
 
-	def __init__(self):
+    def __init__(self):
 
-		self.connection = sqlite3.connect(
-			DATABASE_FILE
-		)
+        self.connection = sqlite3.connect(
+            DATABASE_FILE,
+            check_same_thread=False
+        )
 
-		self.connection.execute(
-			"PRAGMA foreign_keys = ON"
-		)
+        self.connection.execute("PRAGMA foreign_keys = ON")
 
-		self.cursor = self.connection.cursor()
+        self.connection.row_factory = sqlite3.Row
 
-
-    # ---------------------------------------------------
-    # Create All Tables
-    # ---------------------------------------------------
-
-    def create_tables(self):
-
-        self.create_students_table()
-
-        # Remaining tables will be added
-        # in Part-2
-
-        self.connection.commit()
+        self.cursor = self.connection.cursor()
 
     # ---------------------------------------------------
     # STUDENTS TABLE
@@ -78,7 +64,6 @@ class OrbitDatabase:
     def create_students_table(self):
 
         self.cursor.execute("""
-
         CREATE TABLE IF NOT EXISTS students(
 
             registration_id TEXT PRIMARY KEY,
@@ -106,28 +91,12 @@ class OrbitDatabase:
             updated_at TEXT
 
         )
-
         """)
-
-        # Fast Search
 
         self.cursor.execute("""
-
         CREATE INDEX IF NOT EXISTS idx_student_name
-
         ON students(name)
-
         """)
-
-    # ---------------------------------------------------
-    # Close Database
-    # ---------------------------------------------------
-
-    def close(self):
-
-        self.connection.commit()
-
-        self.connection.close()
 
     # ---------------------------------------------------
     # STUDENT PAYMENTS TABLE
@@ -136,7 +105,6 @@ class OrbitDatabase:
     def create_student_payments_table(self):
 
         self.cursor.execute("""
-
         CREATE TABLE IF NOT EXISTS student_payments(
 
             payment_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -160,15 +128,11 @@ class OrbitDatabase:
                 ON DELETE CASCADE
 
         )
-
         """)
 
         self.cursor.execute("""
-
         CREATE INDEX IF NOT EXISTS idx_payment_registration
-
         ON student_payments(registration_id)
-
         """)
 
     # ---------------------------------------------------
@@ -178,7 +142,6 @@ class OrbitDatabase:
     def create_incomes_table(self):
 
         self.cursor.execute("""
-
         CREATE TABLE IF NOT EXISTS incomes(
 
             income_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -189,10 +152,11 @@ class OrbitDatabase:
 
             remarks TEXT,
 
-            created_at TEXT
+            created_at TEXT,
+
+            payment_method TEXT DEFAULT 'Cash'
 
         )
-
         """)
 
     # ---------------------------------------------------
@@ -202,7 +166,6 @@ class OrbitDatabase:
     def create_expenses_table(self):
 
         self.cursor.execute("""
-
         CREATE TABLE IF NOT EXISTS expenses(
 
             expense_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -213,10 +176,13 @@ class OrbitDatabase:
 
             remarks TEXT,
 
-            created_at TEXT
+            created_at TEXT,
+
+            category TEXT DEFAULT 'Other',
+
+            payment_method TEXT DEFAULT 'Cash'
 
         )
-
         """)
 
     # ---------------------------------------------------
@@ -226,7 +192,6 @@ class OrbitDatabase:
     def create_settings_table(self):
 
         self.cursor.execute("""
-
         CREATE TABLE IF NOT EXISTS app_settings(
 
             setting_key TEXT PRIMARY KEY,
@@ -234,8 +199,8 @@ class OrbitDatabase:
             setting_value TEXT
 
         )
-
         """)
+
 
     # ---------------------------------------------------
     # AUDIT LOG TABLE
@@ -244,7 +209,6 @@ class OrbitDatabase:
     def create_audit_log_table(self):
 
         self.cursor.execute("""
-
         CREATE TABLE IF NOT EXISTS audit_log(
 
             log_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -258,11 +222,11 @@ class OrbitDatabase:
             description TEXT
 
         )
-
         """)
 
+
     # ---------------------------------------------------
-    # UPDATE create_tables()
+    # CREATE ALL TABLES
     # ---------------------------------------------------
 
     def create_tables(self):
@@ -299,18 +263,42 @@ class OrbitDatabase:
 
         }
 
+
         for key, value in defaults.items():
 
-            self.cursor.execute("""
+            self.cursor.execute(
+                """
+                INSERT OR IGNORE INTO app_settings
+                (
+                    setting_key,
+                    setting_value
+                )
+                VALUES (?, ?)
+                """,
+                (key, value)
+            )
 
-            INSERT OR IGNORE INTO app_settings
-            (setting_key, setting_value)
-
-            VALUES (?, ?)
-
-            """, (key, value))
 
         self.connection.commit()
+
+
+
+    # ---------------------------------------------------
+    # CLOSE DATABASE
+    # ---------------------------------------------------
+
+    def close(self):
+
+        try:
+
+            self.connection.commit()
+
+            self.connection.close()
+
+        except Exception:
+
+            pass
+
 
 
 # -------------------------------------------------------
@@ -327,10 +315,15 @@ def create_database():
 
     db.close()
 
+
     print("=" * 45)
+
     print(" ORBIT DRIVING SCHOOL")
+
     print(" Database Created Successfully")
+
     print("=" * 45)
+
 
 
 # -------------------------------------------------------

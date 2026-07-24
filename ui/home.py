@@ -473,6 +473,10 @@ class Home:
 
         self.page.update()
 
+    def refresh_application(self, e=None):
+
+        self.refresh_app()
+
 
     # -------------------------
     # Action Button
@@ -508,15 +512,6 @@ class Home:
             on_click=action
 
         )
-
-    # -------------------------
-    # Refresh App
-    # -------------------------
-
-    def refresh_dashboard(self, e=None):
-
-        self.refresh_app()
-
 
     # -------------------------
     # Open Report Search
@@ -568,7 +563,9 @@ class Home:
 
                 self.page,
 
-                self.change_screen
+                self.change_screen,
+
+                self.refresh_app
 
             ).build()
 
@@ -980,7 +977,7 @@ class Home:
 
                     ft.Image(
 
-                        src="images/logo.png",
+                        src="assets/images/logo.png",
 
                         width=120,
 
